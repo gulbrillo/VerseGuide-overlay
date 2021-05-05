@@ -39,7 +39,7 @@ These are fair warnings. The VerseGuide Overlay is in fact quite similar to soph
 
 #### Requirements
 
-- Node 12.X.X
+- Node 14.X.X
 - Electron 11.X.X
 - Visual Studio 2019 (C++ desktop workspace, winsdk 10.0.x).
 - Python 2 (`add to PATH`)
