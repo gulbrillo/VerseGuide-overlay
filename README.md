@@ -37,10 +37,39 @@ manually copy `/electron-overlay` and `/node-ovhook` to `/client/node_modules`
     npm run build
 ```
 NPM commands:
-- `npm run dev`
-  (runs app in developent mode)
-- `npm run make` (windows zip/exe with forge - output in /client/out/) 
-    npm run publish (build and upload all make targets to GitHub as draft release)
+- `npm run dev` (run app in developent mode)
+- `npm run make` (build windows zip/exe with electron-forge, output in `client/out/`)
+- `npm run publish` (build and upload all make targets to GitHub as draft release)
+
+`make` requires `client/forge.config.js` not included in the source files:
+
+```javascript
+module.exports = {
+  packagerConfig: {
+    icon: './dist/assets/icon.ico',
+    appBundleId: 'com.verseguide.overlay',
+    ignore: [
+      '^/src',
+      '/darwin-x64',
+      '/linux-arm64',
+      '/linux-x64',
+    ],
+  },
+  makers: [
+    {
+      name: '@electron-forge/maker-squirrel',
+      config: {
+        iconUrl: 'https://verseguide.com/favicon.ico',
+        setupIcon: './dist/assets/icon.ico',
+        loadingGif: './dist/assets/install.gif',
+      },
+    },
+    {
+      name: '@electron-forge/maker-zip',
+    },
+  ],
+};
+```
 
 If iohook does complain (not a valid win32 application) something went wrong with the pre-build binary downloads of the iohook node module.
 I had to copy the electron/v85 and node-v72 folders from another project (ioook 0.9.0) into `client/node-modules/iohook/builds/` (overwrite the downloaded files).
