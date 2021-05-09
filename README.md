@@ -37,7 +37,7 @@ manually copy `/electron-overlay` and `/node-ovhook` to `/client/node_modules`
     npm run build
 ```
 
-NPM commands:
+Running the app:
 - `npm run dev` (run app in developent mode)
 - `npm run make` (build windows zip/exe with electron-forge, output in `client/out/`)
 - `npm run publish` (build and upload all make targets to GitHub as draft release)
