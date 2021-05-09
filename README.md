@@ -1,6 +1,6 @@
 # VerseGuide.com Star Citizen Game Overlay 
 
-Available as zip archive or Windows installer:  __**[installation instructions](https://github.com/gulbrillo/VerseGuide-overlay/wiki)**__
+Available as zip archive or Windows installer, see  **[installation instructions](https://github.com/gulbrillo/VerseGuide-overlay/wiki)**.
 
 ## Creates an interactive transparent browser windows inside the game window.
 
