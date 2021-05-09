@@ -1,8 +1,8 @@
 # VerseGuide.com Star Citizen Game Overlay 
 
-**Creates an interactive transparent browser windows inside the game window.**
+Available as zip archive or Windows installer:  __**[installation instructions](https://github.com/gulbrillo/VerseGuide-overlay/wiki)**__
 
-__**[Installation instructions](https://github.com/gulbrillo/VerseGuide-overlay/wiki)**__
+## Creates an interactive transparent browser windows inside the game window.
 
 The VerseGuide Overlay includes multiple tools developed by the VerseGuide team including Citizens Pitapa, justMurphy, xabdiben, Graupunkt, StoicMako and LordSkippy.
 It watches Windows processes and tries to inject overlay elements into Star Citizen via DirectX upon launch. It registers hotkeys and simulates keyboard input to execute the `/showlocation` command in Global Chat that allows us to retrieve location information via the Windows clipboard.
