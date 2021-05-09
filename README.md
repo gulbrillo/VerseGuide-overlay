@@ -42,7 +42,7 @@ NPM commands:
 - `npm run make` (build windows zip/exe with electron-forge, output in `client/out/`)
 - `npm run publish` (build and upload all make targets to GitHub as draft release)
 
-If iohook throws a `not a valid win32 application` error, the pre-build iohook binaries are missing or broken. Try running `npm i iohook@0.9.0` again. iohook@0.9.1 is broken.
+If iohook throws a `not a valid win32 application` error, the pre-build iohook binaries are missing or broken. Try running `npm i iohook@0.9.0`. iohook@0.9.1 is broken.
 
 `make` requires `client/forge.config.js` not included in the source files:
 
