@@ -14,6 +14,10 @@
             visibility: hidden !important;
         }
 
+        dialog::backdrop {
+            background-color: rgba(0,0,0,.67);
+        }
+
         body {
             width: 600px;
             height: 850px;
@@ -47,6 +51,11 @@
         .mdl-layout__content::-webkit-scrollbar-track {
             background-color: rgba(0,0,0,0);
         }
+
+        .bold {
+            font-weight: 600 !important;
+        }
+
 
         .fancyOverflow {
             overflow: auto;
@@ -214,7 +223,7 @@
             border-bottom: 1px solid rgba(0,0,0,.12) !important;
         }
 
-        .light .mdl-button--accent {
+        .light .mdl-button--accent, #hint {
             height: 40px !important;
             padding: 0 22px !important;
             color: black !important;
@@ -328,14 +337,17 @@
 
                 <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" style="-webkit-app-region: no-drag; margin-left: 16px; margin-top: -16px; padding: 0 !important;"
                     data-mdl-for="demo-menu-bottom-left">
-                    <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" onclick="window.open('https://verseguide.com')">
-                        <i class="material-icons">web</i>
-                        <span style="margin-left: 14px;">VerseGuide.com</span>
+
+                    <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" id='show-debug'>
+                        <i class="material-icons">bug_report</i>
+                        <span style="margin-left: 14px;">Debug</span>
                     </li>
-                    <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" onclick="window.open('https://discord.gg/Pge9zckdbk')">
-                        <i class="material-icons">support_agent</i>
-                        <span style="margin-left: 14px;">Discord</span>
+
+                    <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" id='show-log'>
+                        <i class="material-icons">article</i>
+                        <span style="margin-left: 14px;">Log</span>
                     </li>
+
                     <li class="mdl-menu__item mdl-layout__header-row mdl-menu__item--full-bleed-divider" style="justify-content: left !important;" onclick="window.open('https://verseguide.com/legal')">
                         <i class="material-icons">policy</i>
                         <span style="margin-left: 14px;">Privacy notice</span>
@@ -465,33 +477,46 @@
                     <i class="material-icons">password</i>
                     <span style="margin-left: 14px;">Log in</span>
                 </li>
-                <li id='help' class="mdl-menu__item mdl-layout__header-row mdl-menu__item--full-bleed-divider" style="justify-content: left !important;">
-                    <i class="material-icons">help_outline</i>
-                    <span style="margin-left: 14px;">Help</span>
-                </li>
                 <li id='logout' class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;">
                         <i class="material-icons">logout</i>
                         <span style="margin-left: 14px;">Sign out</span>
                 </li>
             </ul>
 
-            <span id="userSpan" style="margin-left: 10px;">please log in</span>
+            <span id="userSpan" style="margin-left: 10px; text-overflow: ellipsis !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 300px;">log in to VerseGuide.com</span>
 
             <span class = "mdl-layout-spacer"></span>
 
+            <button type="button" class="hide mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="hint" style="margin-right: 8px;">Update available</button>
+
             <div class="right">
 
-            <button id="demo-menu-config" class="mdl-button mdl-js-button mdl-button--icon">
+            <button id="demo-menu-config" class="mdl-button mdl-js-button mdl-button--icon" style="margin: 0 4px;">
             <i class="material-icons">settings</i>
             </button>
 
             <ul class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" style="margin-left: -24px; margin-right: 24px; margin-bottom: -4px; padding: 0 !important;"
                 data-mdl-for="demo-menu-config">
-                <li class="mdl-menu__item">Help</li>
-                <li id='show-debug' class="mdl-menu__item">Debug</li>
-                <li id='show-log' class="mdl-menu__item">Log</li>
-                <li id='checkForUpdates' class="mdl-menu__item mdl-menu__item--full-bleed-divider">Check for Updates</li>
-                <li id='show-settings' class="mdl-menu__item">Settings</li>
+                <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" onclick="window.open('https://verseguide.com')">
+                    <i class="material-icons">web</i>
+                    <span style="margin-left: 14px;">VerseGuide.com</span>
+                </li>
+                <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" onclick="window.open('https://discord.gg/Pge9zckdbk')">
+                    <i class="material-icons">support_agent</i>
+                    <span style="margin-left: 14px;">Discord</span>
+                </li>
+                <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" onclick="window.open('https://github.com/gulbrillo/VerseGuide-overlay/wiki')">
+                    <i class="material-icons">help_outline</i>
+                    <span style="margin-left: 14px;">Help</span>
+                </li>
+                <li class="mdl-menu__item mdl-layout__header-row mdl-menu__item--full-bleed-divider" style="justify-content: left !important;" id='checkForUpdates'>
+                    <i class="material-icons">system_update</i>
+                    <span style="margin-left: 14px;">Check for Updates</span>
+                </li>
+                <li class="mdl-menu__item mdl-layout__header-row" style="justify-content: left !important;" id='show-settings'>
+                    <i class="material-icons">tune</i>
+                    <span style="margin-left: 14px;">Settings</span>
+                </li>
             </ul>
 
             </div>
@@ -678,17 +703,29 @@ XXX
 
     <script>
 
+        let updateNotificationShow = false;
+
         const {
             ipcRenderer
-        } = window.require('electron')
+        } = window.require('electron');
 
+        const {Notification} = require('electron').remote;
+        const path = window.require('path');
 
+        const updateNotificationOptions = {
+            title: 'Update available',
+            body: 'A newer version of VerseGuide is available for download. Please check the app for details.',
+            icon: path.join(__dirname, '../assets/icon.ico'),
+            timeoutType: 'never',
+        };
 
+        const updateNotification = new Notification(updateNotificationOptions);
 
         const updateDialog = document.getElementById('updateDialog');
         const checkForUpdates = document.querySelector('#checkForUpdates');
         const updateStatus = document.querySelector('#updateStatus');
         const updateInfo = document.querySelector('#updateInfo');
+        const hint = document.getElementById('hint');
 
         const latestVersionH = document.querySelector('#latestVersion');
         const latestDateH = document.querySelector('#latestDate');
@@ -705,6 +742,27 @@ XXX
         const updateCancel = updateDialog.querySelector('.updateCancel');
         const restartLater = updateDialog.querySelector('.restartLater');
         const restartNow = updateDialog.querySelector('.restartNow');
+
+        hint.addEventListener('click', function() {
+
+            loadingIndicator.classList.remove("hide");
+
+            updateOK.classList.remove("none");
+            installUpdate.classList.add("none");
+            updateCancel.classList.add("none");
+            restartLater.classList.add("none");
+            restartNow.classList.add("none");
+
+            updateStatus.innerHTML = 'Checking for Updates';
+            currentVersionH.innerHTML = '&nbsp;';
+            currentDateH.innerHTML = '&nbsp;';
+            latestVersionH.innerHTML = '&nbsp;';
+            latestDateH.innerHTML = '&nbsp;';
+            updateInfo.innerHTML = '&nbsp;';
+
+            ipcRenderer.send("checkForUpdates");
+            updateDialog.showModal();
+        });
 
         checkForUpdates.addEventListener('click', function() {
 
@@ -726,6 +784,7 @@ XXX
             ipcRenderer.send("checkForUpdates");
             updateDialog.showModal();
         });
+
         updateDialog.querySelector('.updateCancel').addEventListener('click', function() {
             updateDialog.close();
         });
@@ -745,6 +804,7 @@ XXX
 
         ipcRenderer.on("latestVersion", (event, {latestVersion, latestDate, latestInfo, currentVersion, currentDate, error, message}) => {
 
+
             loadingIndicator.classList.add("hide");
 
             if (error) {
@@ -760,6 +820,13 @@ XXX
                 const isNewer = (currentDateD.getTime() - latestDateD.getTime())
                 if (isNewer < 0) {
                     updateFound = true
+                    hint.classList.remove("hide");
+                    if (!updateNotificationShow) {
+                        updateNotificationShow = true;
+                        updateNotification.show();
+                    }
+                } else {
+                    hint.classList.add("hide");
                 }
 
                 currentDateD = currentDateD.toLocaleDateString('en-CA', {
@@ -774,17 +841,18 @@ XXX
                 currentDateH.innerHTML = currentDateD;
                 latestVersionH.innerHTML = latestVersion;
                 latestDateH.innerHTML = latestDateD;
-                updateInfo.innerHTML = latestInfo;
 
                 if (updateFound) {
 
                     updateOK.classList.add("none");
                     installUpdate.classList.remove("none");
                     updateCancel.classList.remove("none");
+                    updateInfo.innerHTML = latestInfo;
 
                     updateStatus.innerHTML = 'Update Found';
                 } else {
                     updateStatus.innerHTML = 'No Updates Available';
+                    updateInfo.innerHTML = '&nbsp;';
                 }
             }
 
@@ -888,7 +956,7 @@ XXX
 
         ipcRenderer.on("user", (event, user) => {
 
-            let userText = 'please log in'
+            let userText = 'log in to VerseGuide.com'
             let userImage = null
 
             if (user) {

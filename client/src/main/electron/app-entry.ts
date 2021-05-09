@@ -57,7 +57,28 @@ const db = firebase.firestore();
 
 const Store = require('electron-store');
 
-const store = new Store();
+const schema = {
+  autoCheckUpdates: {
+    type: 'boolean',
+    default: true,
+  },
+  autoInstallUpdates: {
+    type: 'boolean',
+    default: false,
+  },
+  locationUpdateInterval: {
+    type: 'number',
+    maximum: 900,
+    minimum: 60,
+    default: 300,
+  },
+  locationUpdateF12: {
+    type: 'boolean',
+    default: false,
+  },
+};
+
+const store = new Store({ schema });
 
 // Read userJson from disk and log in
 
@@ -212,55 +233,6 @@ export function ConvertKeyCodeToScanCode(keyCode: number) {
 //
 /// ////////////////////////////////////////////////////////
 
-// /////////////////////////////////////////////////////////
-// Auto Updater
-
-if (app.isPackaged) {
-  const server = 'https://update.electronjs.org';
-  const feed = `${server}/gulbrillo/VerseGuide-overlay/${process.platform}-${process.arch}/${app.getVersion()}`;
-
-  // @ts-ignore
-  autoUpdater.setFeedURL(feed);
-
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-    const dialogOpts = {
-      type: 'info',
-      buttons: ['Restart', 'Later'],
-      title: 'Application Update',
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'A new version has been downloaded. Restart the application to apply the updates.',
-    };
-
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall();
-    });
-  });
-
-  autoUpdater.on('error', (message) => {
-    console.error('There was a problem updating the application');
-    console.error(message);
-  });
-
-  autoUpdater.on('checking-for-update', () => {
-    console.log('checking-for-update');
-  });
-
-  autoUpdater.on('update-available', () => {
-    console.log('update-available');
-  });
-
-  autoUpdater.on('update-not-available', () => {
-    console.log('update-not-available');
-  });
-
-  autoUpdater.on('before-quit-for-update', () => {
-    console.log('before-quit-for-update');
-  });
-}
-
-//
-/// /////////////////////////////////////////////////////////
-
 const axios = require('axios').default;
 
 let toggleCounter = false;
@@ -336,6 +308,108 @@ class Application {
         window.webContents.openDevTools();
       }
     }
+  }
+
+  public checkForUpdates() {
+    const window = this.getWindow(AppWindows.main);
+    let errorText;
+
+    axios.get(`https://api.github.com/repos/gulbrillo/VerseGuide-overlay/releases/tags/v${app.getVersion()}`)
+      .then((responseCurrent) => {
+        axios.get('https://api.github.com/repos/gulbrillo/VerseGuide-overlay/releases/latest')
+          .then((responseLatest) => {
+            if (window) {
+              window.webContents.send('latestVersion', {
+                current: app.getVersion(), latestVersion: responseLatest.data.tag_name, latestDate: responseLatest.data.published_at, latestInfo: responseLatest.data.body, currentVersion: responseCurrent.data.tag_name, currentDate: responseCurrent.data.published_at,
+              });
+            }
+          })
+          .catch((error) => {
+            errorText = error;
+            if (errorText && errorText.response) { errorText = errorText.response; }
+            if (errorText && errorText.data) { errorText = errorText.data; }
+            if (errorText && errorText.message === 'Not Found') { errorText = 'unable to find any releases'; } else if (errorText && errorText.message) { errorText = errorText.message; }
+
+            if (window) {
+              window.webContents.send('latestVersion', { error: true, message: errorText });
+            }
+          });
+      })
+      .catch((error) => {
+        errorText = error;
+        if (errorText && errorText.response) { errorText = errorText.response; }
+        if (errorText && errorText.data) { errorText = errorText.data; }
+        if (errorText && errorText.message === 'Not Found') { errorText = 'you are running an unofficial version of VerseGuide Overlay'; } else if (errorText && errorText.message) { errorText = errorText.message; }
+
+        if (window) {
+          window.webContents.send('latestVersion', { error: true, message: errorText });
+        }
+      });
+  }
+
+  public setupAutoUpdates() {
+    if (app.isPackaged) {
+      const server = 'https://update.electronjs.org';
+      const feed = `${server}/gulbrillo/VerseGuide-overlay/${process.platform}-${process.arch}/${app.getVersion()}`;
+      const window = this.getWindow(AppWindows.main);
+
+      // @ts-ignore
+      autoUpdater.setFeedURL(feed);
+
+      autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+        const dialogOpts = {
+          type: 'info',
+          buttons: ['Restart', 'Later'],
+          title: 'Application Update',
+          message: process.platform === 'win32' ? releaseNotes : releaseName,
+          detail: 'A new version has been downloaded. Restart the application to apply the updates.',
+        };
+
+        dialog.showMessageBox(dialogOpts).then((returnValue) => {
+          if (returnValue.response === 0) autoUpdater.quitAndInstall();
+        });
+      });
+
+      autoUpdater.on('error', (message) => {
+        if (window) {
+          window.webContents.send('append_log', `Update error: ${message}`);
+        }
+      });
+
+      autoUpdater.on('checking-for-update', () => {
+        if (window) {
+          window.webContents.send('append_log', 'Checking for updates');
+        }
+      });
+
+      autoUpdater.on('update-available', () => {
+        if (window) {
+          window.webContents.send('append_log', 'Update available');
+        }
+      });
+
+      autoUpdater.on('update-not-available', () => {
+        if (window) {
+          window.webContents.send('append_log', 'Update now available');
+        }
+      });
+
+      autoUpdater.on('before-quit-for-update', () => {
+        console.log('before-quit-for-update');
+      });
+    }
+
+    const self = this;
+
+    // check for updates once per hour
+    setInterval(() => {
+      if (store.get('autoCheckUpdates')) { self.checkForUpdates(); }
+    }, 60 * 60 * 1000);
+
+    // check for updates on startup (2 second delay)
+    setTimeout(() => {
+      if (store.get('autoCheckUpdates')) { self.checkForUpdates(); }
+    }, 2000);
   }
 
   public syncNTPtime() {
@@ -611,6 +685,7 @@ class Application {
       maximizable: false,
       webPreferences: {
         nodeIntegration: true,
+        enableRemoteModule: true,
       },
     };
     const mainWindow = this.createWindow(AppWindows.main, options);
@@ -1099,6 +1174,22 @@ class Application {
   }
 
   public start() {
+    const gotTheLock = app.requestSingleInstanceLock();
+
+    if (!gotTheLock) {
+      console.log('app was already running: quit.')
+      app.quit();
+    }
+
+    // Behaviour on second instance for parent process- Pretty much optional
+    let window = this.getWindow(AppWindows.main);
+    app.on('second-instance', (event, argv, cwd) => {
+      if (window) {
+        if (window.isMinimized()) window.restore()
+        window.focus()
+      }
+    })
+
     // set initial dimension parameters to full primary display dimensions
     const mainScreen = screen.getPrimaryDisplay();
     if (mainScreen && mainScreen.size) {
@@ -1119,6 +1210,8 @@ class Application {
     this.setupSystemTray();
 
     this.setupIpc();
+
+    this.setupAutoUpdates();
 
     const self = this;
 
@@ -1380,7 +1473,7 @@ class Application {
       }
     });
 
-    ipcMain.on('installUpdates', () => {
+    ipcMain.on('installUpdate', () => {
       if (app.isPackaged) {
         autoUpdater.checkForUpdates();
       } else {
@@ -1397,46 +1490,7 @@ class Application {
     });
 
     ipcMain.on('checkForUpdates', () => {
-      const window = this.getWindow(AppWindows.main);
-      let errorText
-
-      axios.get(`https://api.github.com/repos/gulbrillo/VerseGuide-overlay/releases/tags/v${app.getVersion()}`)
-        .then((responseCurrent) => {
-
-            axios.get('https://api.github.com/repos/gulbrillo/VerseGuide-overlay/releases/latest')
-              .then((responseLatest) => {
-                if (window) {
-                  window.webContents.send('latestVersion', {
-                    current: app.getVersion(), latestVersion: responseLatest.data.tag_name, latestDate: responseLatest.data.created_at, latestInfo: responseLatest.data.body, currentVersion: responseCurrent.data.tag_name, currentDate: responseCurrent.data.created_at,
-                  });
-                }
-              })
-              .catch((error) => {
-
-                errorText = error
-                if (errorText && errorText.response) {errorText = errorText.response}
-                if (errorText && errorText.data) {errorText = errorText.data}
-                if (errorText && errorText.message === 'Not Found') {errorText = 'unable to find any releases'}
-                  else if (errorText && errorText.message) {errorText = errorText.message}
-
-                if (window) {
-                  window.webContents.send('latestVersion', { error: true, message: errorText });
-                }
-              });
-
-        })
-        .catch((error) => {
-
-          errorText = error
-          if (errorText && errorText.response) {errorText = errorText.response}
-          if (errorText && errorText.data) {errorText = errorText.data}
-          if (errorText && errorText.message === 'Not Found') {errorText = 'you are running an unofficial version of VerseGuide Overlay'}
-            else if (errorText && errorText.message) {errorText = errorText.message}
-
-          if (window) {
-            window.webContents.send('latestVersion', { error: true, message: errorText });
-          }
-        });
+      this.checkForUpdates();
     });
 
     ipcMain.on('logout', () => {

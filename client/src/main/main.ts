@@ -14,7 +14,8 @@ const appEntry = new Application();
 
 // force windows scaling to disable
 ElectronApp.setName('VerseGuide');
-ElectronApp.setAppUserModelId('com.verseguide.overlay.verseguide.VerseGuide');
+// ElectronApp.setAppUserModelId('com.verseguide.overlay.verseguide.VerseGuide');
+ElectronApp.setAppUserModelId(process.execPath)
 ElectronApp.commandLine.appendSwitch('high-dpi-support', '1');
 ElectronApp.commandLine.appendSwitch('force-device-scale-factor', '1');
 
