@@ -24,19 +24,23 @@ This is an unofficial Star Citizen project, not affiliated with the Cloud Imperi
 
 ```bash
     cd client
-
-    npm link ../electron-overlay (if this fails, try manually deleting /electron-overlay/node_modules/.bin
-    npm link ../node-ovhook
-
-    npm i (creates symlink only, breaks electron-forge make - make sure to manually copy /electron-overlay and /node-ovhook to /client/node_modules!)
-    npm run compile:electron
-
-    npm run build
-
-    npm run dev (develop)
-    npm run make (windows zip/exe/msi with forge - output in /client/out/) 
-    npm run publish (build and upload all make targets to GitHub as draft release)
+    npm link ../electron-overlay
 ```
+if this fails, try manually deleting `/electron-overlay/node_modules/.bin`
+```bash
+    npm link ../node-ovhook
+    npm i
+```
+manually copy `/electron-overlay` and `/node-ovhook` to `/client/node_modules`
+```bash
+    npm run compile:electron
+    npm run build
+```
+NPM commands:
+- `npm run dev`
+  (runs app in developent mode)
+- `npm run make` (windows zip/exe with forge - output in /client/out/) 
+    npm run publish (build and upload all make targets to GitHub as draft release)
 
 If iohook does complain (not a valid win32 application) something went wrong with the pre-build binary downloads of the iohook node module.
 I had to copy the electron/v85 and node-v72 folders from another project (ioook 0.9.0) into `client/node-modules/iohook/builds/` (overwrite the downloaded files).
