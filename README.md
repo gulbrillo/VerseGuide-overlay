@@ -36,10 +36,13 @@ manually copy `/electron-overlay` and `/node-ovhook` to `/client/node_modules`
     npm run compile:electron
     npm run build
 ```
+
 NPM commands:
 - `npm run dev` (run app in developent mode)
 - `npm run make` (build windows zip/exe with electron-forge, output in `client/out/`)
 - `npm run publish` (build and upload all make targets to GitHub as draft release)
+
+If iohook throws a `not a valid win32 application` error, the pre-build iohook binaries are missing or broken. Try running `npm i iohook@0.9.0` again. iohook@0.9.1 is broken.
 
 `make` requires `client/forge.config.js` not included in the source files:
 
@@ -70,10 +73,6 @@ module.exports = {
   ],
 };
 ```
-
-If iohook does complain (not a valid win32 application) something went wrong with the pre-build binary downloads of the iohook node module.
-I had to copy the electron/v85 and node-v72 folders from another project (ioook 0.9.0) into `client/node-modules/iohook/builds/` (overwrite the downloaded files).
-Hopefully this will be fixed on iohooks end by the time you try to compile this.  
 
 #### Recompile game-overlay dll
 
