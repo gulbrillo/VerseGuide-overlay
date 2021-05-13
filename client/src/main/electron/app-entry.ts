@@ -66,6 +66,30 @@ const schema = {
     type: 'boolean',
     default: false,
   },
+  processMonitor: {
+    type: 'boolean',
+    default: true,
+  },
+  forceSixteen: {
+    type: 'boolean',
+    default: false,
+  },
+  forceResolution: {
+    type: 'boolean',
+    default: false,
+  },
+  resolutionWidth: {
+    type: 'number',
+    maximum: 15360,
+    minimum: 640,
+    default: 1920,
+  },
+  resolutionHeight: {
+    type: 'number',
+    maximum: 8640,
+    minimum: 480,
+    default: 1080,
+  },
   locationUpdateInterval: {
     type: 'number',
     maximum: 900,
@@ -974,6 +998,8 @@ class Application {
       frame: false,
       show: false,
       transparent: true,
+      resizable: false,
+      backgroundColor: '#00000000',
       webPreferences: {
         nodeIntegration: true,
         offscreen: true,
@@ -990,7 +1016,7 @@ class Application {
     window.loadURL(fileUrl(path.join(global.CONFIG.distDir, 'index/overlay.html')));
     // window.loadURL('https://www.verseguide.com')
 
-    this.addOverlayWindow('MainOverlay', window, 0, 32);
+    this.addOverlayWindow('MainOverlay', window, 0, 0); // caption height (32) is for making window movable
     return window;
   }
 

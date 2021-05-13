@@ -6,6 +6,19 @@
     <title>VerseGuide</title>
     <style>
 
+        .large {
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+        }
+
+        .huge {
+            font-size: 24px;
+            line-height: 24px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
         .none {
             display: none !important;
         }
@@ -109,6 +122,15 @@
             height: 32px !important;
         }
 
+        .top-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            box-sizing: border-box;
+            padding: 0 10px !important;
+        }
+
         .bottom {
             box-sizing: border-box;
             background-color: rgba(0, 0, 0, 0.33);
@@ -163,7 +185,7 @@
             background-color: rgba(255,255,255,.8) !important;
             backdrop-filter: blur(4px);
             box-shadow: none !important;
-            border: 1px solid rgba(0,0,0,.2) !important;
+            border: 1px solid rgba(255,255,255,.2) !important;
             box-sizing: border-box;
             color: white !important;
             border-radius: 4px !important;
@@ -171,8 +193,19 @@
         }
 
         .mdl-dialog.dark {
-            background-color: rgba(20,20,20,1) !important;
+            background-color: rgba(20,20,20,.8) !important;
             border-radius: 0 !important;
+        }
+
+        .mdl-dialog.dark .mdl-dialog__content {
+            padding: 12px 12px 24px !important;
+        }
+
+        .mdl-dialog.dark .mdl-dialog__content .box {
+            padding: 12px 24px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.1);
+            margin-bottom: 32px;
         }
 
         .mdl-menu, .mdl-menu__outline {
@@ -289,6 +322,37 @@
             border: 2px solid rgb(64,196,255) !important;
         }
 
+        .dark .mdl-switch__track {
+            background-color: rgba(255, 255, 255, 0.26);
+        }
+
+        .dark .mdl-switch.is-disabled .mdl-switch__track {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .dark .mdl-radio__outer-circle {
+            border: 2px solid rgba(255, 255, 255, .54);
+        }
+
+
+        .dark .mdl-button--accent {
+            box-sizing: content-box !important;
+            border: 2px solid transparent !important;
+            color: white !important;
+            opacity: .67;
+            text-transform: none !important;
+            font-weight: 500 !important;
+        }
+
+        .dark .mdl-button--colored {
+            box-sizing: content-box !important;
+            border: 2px solid rgba(255,255,255,.44) !important;
+            background-color: transparent !important;
+            color: rgb(64,196,255) !important;
+            text-transform: none !important;
+            font-weight: 500 !important;
+        }
+
         .dark .mdl-textfield__input {
             border-bottom: 1px solid rgba(255,255,255,.48) !important;
         }
@@ -305,7 +369,6 @@
         .dark .mdl-checkbox.is-checked .mdl-checkbox__box-outline {
             border: 2px solid rgb(64,196,255) !important;
         }
-
 
     </style>
 
@@ -589,30 +652,105 @@
         </div>
     </dialog>
 
-    <dialog id='settingsDialog' class="mdl-dialog dark" style="width: 100%; bottom:0; top: 200px; height: 648px;">
+    <dialog id='settingsDialog' class="mdl-dialog dark" style="-webkit-app-region: no-drag; width: calc(100% - 32px); height: calc(100% - 32px); bottom:16px; top: 16px; left: 16px; right: 16px; padding-top: 56px;">
         <div class="mdl-dialog__content" style="color: rgba(255,255,255,.8) !important;">
 
 
 
-            <div class="top mdl-layout__header-row" style="padding: 0 !important; background-color: rgba(0,0,0,.33);">
+            <div class="mdl-layout__header-row top-header" style="-webkit-app-region: drag;">
 
+                <i class="material-icons" style="margin: 4px;">tune</i>
 
-                    <span style="font-size: 14px !important; font-weight: 500 !important; margin-left: 16px;">
-                        Settings
-                    </span>
-
+                <div class="huge" style="margin-left: 8px;">Settings</div>
 
                 <div class = "mdl-layout-spacer"></div>
 
-                <button style="-webkit-app-region: no-drag;  border-radius: 0 !important;"
-                        class="mdl-button mdl-js-button mdl-button--icon close">
+                <button class="mdl-button mdl-js-button mdl-button--icon close" style="-webkit-app-region: no-drag;">
                     <i class="material-icons">close</i>
                 </button>
 
+            </div>
+
+            <div class="box">
+
+                <p>UPDATES</p>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
+                    <input type="checkbox" id="updates" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Check for updates in the background …</span>
+                </label>
+
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--2-col">
+                        <p class="large" style="margin: 0 0 0 38px;">… and …</p>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                        <div style="margin: 0">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="updates-1">
+                                <input type="radio" id="updates-1" class="mdl-radio__button" name="updates" value="notify" checked>
+                                <span class="mdl-radio__label" style="white-space: nowrap;">notify me when update is available</span>
+                            </label>
+                        </div>
+                        <div style="margin: 0">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="updates-2">
+                                <input type="radio" id="updates-2" class="mdl-radio__button" name="updates" value="download">
+                                <span class="mdl-radio__label" style="white-space: nowrap;">download / install automatically</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
-XXX
+            <div class="box">
+
+                <p>PLACEMENT</p>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sixteen">
+                    <input type="checkbox" id="sixteen" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Force overlay inside 16:9 aspect ratio</span>
+                </label>
+
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resolution" style="margin-top: 16px;">
+                    <input type="checkbox" id="resolution" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Overwrite game resolution …</span>
+                </label>
+
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--8-col" style="margin-top: -16px; margin-bottom: -16px;">
+                        <div class="large" style="margin: 0 0 0 38px;">
+                        <div class="mdl-textfield mdl-js-textfield" style="max-width: 100px !important;">
+                            <input class="mdl-textfield__input" type="text" pattern="[0-9]*" id="width">
+                            <label class="mdl-textfield__label" for="width">width</label>
+                            <span class="mdl-textfield__error">must be a number</span>
+                        </div>
+                            &nbsp;×&nbsp;
+                            <div class="mdl-textfield mdl-js-textfield" style="max-width: 100px !important;">
+                                <input class="mdl-textfield__input" type="text" pattern="[0-9]*" id="height">
+                                <label class="mdl-textfield__label" for="height">height</label>
+                                <span class="mdl-textfield__error">must be a number</span>
+                            </div>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            </div>
+
+            <div class="box">
+
+                <p>PROCESS MONITOR</p>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="processmonitor">
+                    <input type="checkbox" id="processmonitor" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Launch overlay automatically with Star Citizen</span>
+                </label>
+
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--8-col">
+                        <p class="large" style="margin: 0 0 0 38px; color: red;">Sorry, but there was an error launching the process monitor. This should be fixed by a Windows restart.</p>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
@@ -709,7 +847,8 @@ XXX
             ipcRenderer
         } = window.require('electron');
 
-        const {Notification} = require('electron').remote;
+        const { Notification } = require('electron').remote;
+
         const path = window.require('path');
 
         const updateNotificationOptions = {

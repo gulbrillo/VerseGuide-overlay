@@ -6,6 +6,7 @@ import {
 } from 'electron/main';
 
 const { Notification } = require('electron').remote;
+const { app } = require('electron').remote;
 
 const path = window.require('path');
 
@@ -46,6 +47,14 @@ const processMonitorNotification = new Notification(processMonitorNotificationOp
 const stopMonitor = document.getElementById('stopMonitor');
 stopMonitor.addEventListener('click', () => {
   WQL.closeEventSink();
+});
+
+app.on('before-quit', () => {
+  try {
+    WQL.closeEventSink();
+  } catch (e) {
+    console.log('Failed to close Event Monitor: ', e)
+  }
 });
 
 let processMonitor = null;
