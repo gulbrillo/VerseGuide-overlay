@@ -1,5 +1,9 @@
 # VerseGuide.com Star Citizen Game Overlay 
 
+***
+## CURRENTLY BROKEN! - we don't know exactly why yet. Might be DirectX 11.1. Seems like we will have to rewrite the entire overlay. :/
+***
+
 Available as zip archive or Windows installer, see  **[installation instructions](https://github.com/gulbrillo/VerseGuide-overlay/wiki/installation)**.
 
 ## Interactive transparent browser windows inside the game window
